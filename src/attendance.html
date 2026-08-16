@@ -1,0 +1,99 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>School Management System</h1>
+    <p>Attendance Management</p>
+</header>
+
+<nav>
+    <a href="index.html">Dashboard</a>
+    <a href="students.html">Students</a>
+    <a href="attendance.html">Attendance</a>
+</nav>
+
+<main class="container">
+
+    <h2>Mark Attendance</h2>
+
+    <input type="date" id="date">
+
+    <div id="studentList"></div>
+
+    <button onclick="saveAttendance()">
+        Save Attendance
+    </button>
+
+    <p id="message"></p>
+
+</main>
+
+<script>
+
+const students =
+    JSON.parse(localStorage.getItem("students")) || [];
+
+const studentList =
+    document.getElementById("studentList");
+
+document.getElementById("date").value =
+    new Date().toISOString().split("T")[0];
+
+
+if (students.length === 0) {
+
+    studentList.innerHTML =
+        "<p>No students found. Add students first.</p>";
+
+} else {
+
+    students.forEach(student => {
+
+        studentList.innerHTML += `
+            <p>
+                <input type="checkbox" class="present">
+                ${student.name} (Roll: ${student.roll})
+            </p>
+        `;
+    });
+}
+
+
+function saveAttendance() {
+
+    const present =
+        document.querySelectorAll(".present:checked").length;
+
+    const attendance = {
+        date: document.getElementById("date").value,
+        present: present,
+        total: students.length
+    };
+
+    localStorage.setItem(
+        "lastAttendance",
+        JSON.stringify(attendance)
+    );
+
+    document.getElementById("message").innerText =
+        "Attendance saved: " +
+        present + "/" + students.length +
+        " present";
+}
+
+</script>
+
+</body>
+</html>
